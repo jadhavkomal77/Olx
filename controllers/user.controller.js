@@ -97,6 +97,6 @@ exports.addPost = asyncHandler(async (req, res) => {
 
     // modify this code
 
-    await Posts.create({ title, desc, price, images, location, user: req.loggedInUser, category })
+    // await Posts.create({ title, desc, price, images, location, user: req.loggedInUser, category })
     res.json({ message: "Post Create Successs" })
 })
