@@ -6,6 +6,7 @@ const { checkEmpty } = require("../utils/checkEmpty")
 const { json } = require("body-parser")
 const Posts = require("../models/Posts")
 const upload = require("../utils/upload")
+const cloudinary = require("../utils/cloudinary.confing")
 
 exports.VerifyUserEmail = asyncHandler(async (req, res) => {
     console.log(req.loggedInUser)
@@ -100,11 +101,22 @@ exports.addPost = asyncHandler(async (req, res) => {
             return res.status(400).json({ message: "All Fields Required" })
         }
         console.log(req.files);
+        const images = []
 
-        // await Posts.create({
-        //     title, desc, price, images, location,
-        //     user: req.loggedInUser, category
-        // })
+        for (const item of req.files) {
+            const { secure_url } = await cloudinary.uploader.upload(item.path)
+            images.push(secure_url)
+        }
+
+        await Posts.create({
+            title, desc, price, images, location,
+            user: req.loggedInUser, category
+        })
         res.json({ message: "Post Create Successs" })
     })
+})
+
+exports.getAllPosts = asyncHandler(async (req, res) => {
+    const result = await Posts.find()
+    res.json({ message: "post fetch success" })
 })
